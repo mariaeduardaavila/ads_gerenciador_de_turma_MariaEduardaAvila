@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Gerenciador de Turma</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        padding: 20px;
+    }
+     h1 {
+        text-align: center;
+        color: #333;
+    }
+     #box {
+        display: flex;
+        justify-content: space-around;
+        background-color: #c7c5d4;
+        padding: 20px;
+        border-radius: 10px;
+        min-width: 400px;
+    }
+    .secao {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+   .linha {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    input[type="text"] {
+        padding: 5px;
+        border-radius: 5px;
+        border: 1px solid #999;
+        width: 150px;
+    }
+
+    button {
+        border: 2px solid rgb(190, 160, 239);
+        border-radius: 5px;
+        padding: 5px 10px;
+        cursor: pointer;
+        background-color: rgb(163, 126, 177);
+    }
+
+    
+    
+</style>
+</head>
+<body>
+
+<h1>Gerenciador de Turma</h1>
+
+<div id="box">
+    <!-- Seção de adicionar aluno -->
+    <div class="secao">
+        <div class="linha">
+            <input type="text" id="nome1" placeholder="Nome do aluno">
+            <button onclick="AdicionarAlunos()">Adicionar Aluno</button>
+        </div>
+        <div class="linha">
+            <input type="text" id="nota1" placeholder="Notas separadas por vírgula">
+            <button onclick="registrarNotas()">Registrar Nota</button>
+        </div>
+        <div class="linha">
+            <button onclick="ListarAlunos()">Listar Alunos</button>
+            <button onclick="calcularMediaAluno()">Calcular Média</button>
+            <button onclick="listarAprovados() ">mostar aprovados</button>
+        </div>
+    </div>
+</div>
+
+
+    <script>
+        const alunos=[]
+      function AdicionarAlunos() {
+  let adc = document.getElementById('nome1').value.trim();
+   if(!isNaN(adc)){
+  console.log('Nome invalido, tente novamente')
+  return;
+}
+
+let caso = alunos.find(al => al.nome.toLowerCase() === adc.toLowerCase());
+if(caso){
+  console.log('Aluno  já existe')
+  return;
+
+}
+  
+  let existe = alunos.find(a => a.nome === adc);
+  if (existe) {
+    console.log("Aluno já existe");
+    return;
+  }
+  
+  alunos.push({ nome: adc, notas: [] });
+  console.log(`Aluno ${adc} adicionado`);
+}
+
+function registrarNotas() {
+  let nome = document.getElementById('nome1').value.trim();
+  let notasStr = document.getElementById('nota1').value.trim().split(",");
+  let aluno = alunos.find(a => a.nome === nome);
+    if (!aluno) {
+  console.log("Aluno não encontrado");
+  return;
+}
+
+for (let n of notasStr) {
+  let nota = parseFloat(n);
+  if (isNaN(nota) || nota < 0 || nota > 10) {
+    console.log("Nota inválida:", n);
+  } else {
+    aluno.notas.push(nota);
+    console.log("Nota adicionada com sucesso:", nota);
+  }
+}
+  console.log(`Notas de ${nome}: ${aluno.notas}`);
+}
+function listarAprovados() {
+    const mediaMinima = 7; 
+    let aprovados = "";
+
+    for (let i = 0; i < alunos.length; i++) {
+        let notas = alunos[i].notas;
+        if (notas.length === 0) continue; // pula alunos sem notas
+
+        let soma = 0;
+        for (let j = 0; j < notas.length; j++) {
+            soma += notas[j];
+        }
+
+        let media = soma / notas.length;
+
+        if (media >= mediaMinima) {
+            aprovados += `${alunos[i].nome}: ${media.toFixed(2)}\n`;
+        }
+    }
+
+    if (aprovados === "") {
+        console.log("Nenhum aluno aprovado ainda.");
+    } else {
+        console.log("Alunos aprovados:\n" + aprovados);
+    }
+}
+
+
+function calcularMediaAluno() {
+  
+   let resultado = "";
+
+   for (let i = 0; i < alunos.length; i++) {
+       let soma = 0;
+       let notas = alunos[i].notas;
+
+       for (let j = 0; j < notas.length; j++) {
+           soma += notas[j];
+       }
+
+       let media = soma / notas.length;
+       resultado += alunos[i].nome + ": " + media.toFixed(2) + "\n";
+   }
+
+   console.log(resultado); 
+}
+
+ function ListarAlunos(){
+   for (let i = 0; i < alunos.length; i++) {
+    console.log(alunos[i].nome);              
+    console.log(alunos[i].notas);            
+  }
+}
+         </script>
+      </body>
+</html>
